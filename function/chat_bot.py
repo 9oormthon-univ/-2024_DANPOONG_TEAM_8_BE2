@@ -11,7 +11,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 class QuestionRequest(BaseModel):
     question: str
 
-def smart_qa(question: str, char_type: str) -> str:
+def custom_chatbot(question: str, char_type: str) -> str:
     try:
         # GPT-4 초기화
         general_llm = ChatOpenAI(
