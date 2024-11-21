@@ -49,7 +49,7 @@ async def get_character_type_by_user(kakao_id: str) -> Optional[str]:
             result = await cursor.fetchone()  # 첫 번째 결과 반환
             
             if result:
-                return result[0]  # 첫 번째 컬럼(character_type)을 반환
+                return result  # 첫 번째 컬럼(character_type)을 반환
             return None  # 결과가 없을 경우 None 반환
 
     except Exception as e:
