@@ -5,6 +5,8 @@ from function.chat_bot import custom_chatbot
 from query.get_userid_by_kakao import get_userID
 from function.create_missions import create_missions
 from fastapi.middleware.cors import CORSMiddleware  # CORS 미들웨어 import
+from query.get_check_lists_by_id import fetch_check_lists
+from query.get_area_type_by_area_id import get_area_type_by_area_id
 
 
 app = FastAPI()
@@ -62,17 +64,19 @@ async def ask_question(request: QuestionRequest, kakao_id: str = Header(...)):
         )
 async def generate_missions(
     kakao_id: str = Header(..., description= "카카오 사용자 ID"),
-    
+    check_list_id: int = Query(..., description= "사용자 설문 ID"),
+
 ):
     """
-    Kakao ID를 헤더에서 받아, 사용자 맞춤형 미션을 생성합니다.
+    Kakao ID를 헤더에서 받고, check_list_id 를 받아 사용자 맞춤형 미션을 생성합니다.
     """
     # Kakao ID를 이용해 member_id 조회
     member_id = await get_userID(kakao_id)
 
+    
     if not member_id:
         raise HTTPException(status_code=404, detail="해당 Kakao ID에 대한 사용자 정보를 찾을 수 없습니다.")
-
+    
     all_missions = create_missions(questions, weights)
     print("ALL_MISSIONS: ",all_missions)
     
