@@ -67,7 +67,7 @@ async def generate_missions(
 
 ):
     """
-    Kakao ID를 헤더에서 받고, check_list_id 를 받아 사용자 맞춤형 미션을 생성합니다.
+    Kakao ID를 헤더에서 받아 사용자 맞춤형 미션을 생성합니다.
     """
     # Kakao ID를 이용해 member_id 조회
     member_id = await get_userID(kakao_id)
