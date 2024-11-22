@@ -4,7 +4,19 @@ from query.get_character_type_by_id import get_character_type_by_user
 from function.chat_bot import custom_chatbot
 from query.get_userid_by_kakao import get_userID
 from function.create_missions import create_missions
+from fastapi.middleware.cors import CORSMiddleware  # CORS 미들웨어 import
+
+
 app = FastAPI()
+
+# CORS 미들웨어 추가
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 모든 오리진 허용, 필요시 특정 도메인으로 제한 가능
+    allow_credentials=True,
+    allow_methods=["*"],  # 모든 HTTP 메서드 허용
+    allow_headers=["*"],  # 모든 헤더 허용
+)
 
 
 # 요청 모델 정의
