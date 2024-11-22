@@ -53,21 +53,3 @@ def create_missions(questions, weights) :
 
     return json.loads(cleaned_content)
 
-# 테스트 데이터
-questions = [
-    "영양가 있는 식단을 계획하는 방법?",
-    "청소할 때 필요한 필수 도구는 무엇인가요?",
-    "효과적인 공부 시간 관리 방법?",
-    "옷을 깨끗하게 관리하는 법?",
-    "쓰레기 분리수거 규칙은?",
-    "건강한 식단의 예시?",
-    "효율적인 장보기 요령은?"
-]
-weights = [3, 2, 5, 4, 1, 6, 2]
-
-# 실행
-try:
-    missions = create_missions(questions, weights)
-    print(json.dumps(missions, indent=4, ensure_ascii=False))
-except Exception as e:
-    print(f"오류 발생: {e}")
