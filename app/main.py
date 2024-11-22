@@ -1,13 +1,11 @@
 from fastapi import FastAPI, HTTPException, Header, Query
 from pydantic import BaseModel
-from query.get_character_type_by_id import get_character_type_by_user
+from query.get_character_type_by_id import get_character_type_by_user, get_character_info
 from function.chat_bot import custom_chatbot
 from query.get_userid_by_kakao import get_userID
 from function.create_missions import create_missions
 from fastapi.middleware.cors import CORSMiddleware  # CORS 미들웨어 import
-from query.get_check_lists_by_id import fetch_check_lists
-from query.get_area_type_by_area_id import get_area_type_by_area_id
-
+from function.buddy_comment import create_feedback
 
 app = FastAPI()
 
@@ -81,3 +79,30 @@ async def generate_missions(
     
     return {"result": all_missions}
 
+
+@app.post("/api/buddy-feedback", tags=['Buddy_Feedback'], 
+          description="사용자가 미션에 대한 버디 피드백을 제공하는 API입니다.")
+async def provide_buddy_feedback(
+    kakao_id: str = Header(..., description="카카오 사용자 ID"),
+):
+    try:
+        member_id = await get_userID(kakao_id)
+        if not member_id:
+            raise HTTPException(status_code=404, detail="Kakao ID not found.")
+
+        level, char_type = await get_character_info(member_id)
+
+        sample_content, sample_feedback = '집가기', '잘 해결했어'
+        feedback_result = create_feedback(sample_content, sample_feedback, char_type)
+        print(feedback_result)
+        return {
+            "status": "success",
+            "message": "Feedback submitted successfully.",
+            "buddy_feedback": feedback_result,
+            "char_type": char_type,
+            "character_level": level,
+        }
+
+    except Exception as e:
+        print(f"Error in provide_buddy_feedback: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))

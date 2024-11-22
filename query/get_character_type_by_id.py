@@ -1,5 +1,5 @@
 import aiomysql
-from typing import Optional
+from typing import Optional, Dict
 from dotenv import load_dotenv
 from get_userid_by_kakao import get_userID
 import os
@@ -61,3 +61,64 @@ async def get_character_type_by_user(kakao_id: str) -> Optional[str]:
         # 연결 종료
         if connection:
             await connection.ensure_closed()
+
+
+async def get_character_info(member_id: int) -> Optional[Dict]:
+    print(f"get_character_info called with member_id: {member_id}")
+    
+    """
+    member_id로 캐릭터의 level과 character_type 조회
+    """
+    query = """
+    SELECT level, character_type 
+    FROM characters 
+    WHERE member_id = %s;
+    """
+    
+    print(f"Executing query: {query} with member_id = {member_id}")
+    
+    try:
+        # MySQL에 연결
+        conn = await aiomysql.connect(
+            host=DB_HOST,
+            port=DB_PORT,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            db=DB_NAME,
+            cursorclass=aiomysql.DictCursor
+        )
+        
+        print("DB connection successful!")
+
+        # 커서 사용 및 쿼리 실행
+        async with conn.cursor() as cursor:
+            try:
+                print(f"Executing the query for member_id: {member_id}")
+                await cursor.execute(query, (member_id,))
+                print("Query executed successfully.")
+
+                result = await cursor.fetchone()
+                print(f"Query result: {result}")
+                return result['level'], result['character_type']
+
+            except Exception as cursor_error:
+                print(f"Error executing query for member_id {member_id}: {cursor_error}")
+                return None
+
+        # 연결 종료
+        print("Closing the connection.")
+        
+        return result
+
+    except Exception as db_error:
+        print(f"Error connecting to the database: {db_error}")
+        return None
+
+    finally:
+        # 연결 종료
+        if conn:
+            try:
+                await conn.ensure_closed()  
+                print("Database connection closed successfully.")
+            except Exception as close_error:
+                print(f"Error closing the database connection: {close_error}")
