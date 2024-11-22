@@ -64,7 +64,6 @@ async def ask_question(request: QuestionRequest, kakao_id: str = Header(...)):
         )
 async def generate_missions(
     kakao_id: str = Header(..., description= "카카오 사용자 ID"),
-    check_list_id: int = Query(..., description= "사용자 설문 ID"),
 
 ):
     """
