@@ -73,6 +73,11 @@ async def generate_missions(
     if not member_id:
         raise HTTPException(status_code=404, detail="해당 Kakao ID에 대한 사용자 정보를 찾을 수 없습니다.")
     
+    # 사용자 ID 기반 데이터베이스 조회
+    print("체크리스트 아이디 :", check_list_id)
+
+    db_result = await fetch_check_lists(check_list_id)
+
     all_missions = create_missions(questions, weights)
     print("ALL_MISSIONS: ",all_missions)
     
