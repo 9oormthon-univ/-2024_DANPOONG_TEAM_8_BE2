@@ -95,7 +95,7 @@ async def provide_buddy_feedback(
             
         level, char_type = await get_character_info(member_id)
         print(level, char_type, "레벨과 캐릭터타입 \n")
-        content, feedback = await get_mission_content_and_feedback(4, mission_id)
+        content, feedback = await get_mission_content_and_feedback(member_id, mission_id)
         
         feedback_result = create_feedback(content, feedback, char_type)
         
@@ -105,6 +105,8 @@ async def provide_buddy_feedback(
             "buddy_feedback": feedback_result,
             "char_type": char_type,
             "character_level": level,
+            "user_mission" : content,
+            "user_feedback" : feedback
         }
 
     except ValueError as e:
