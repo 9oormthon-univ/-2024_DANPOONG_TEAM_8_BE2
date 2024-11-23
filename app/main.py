@@ -93,7 +93,7 @@ async def provide_buddy_feedback(
         if not member_id:
             raise HTTPException(status_code=404, detail="Kakao ID not found.")
             
-        level, char_type = await get_character_info(5)
+        level, char_type = await get_character_info(member_id)
         print(level, char_type, "레벨과 캐릭터타입 \n")
         content, feedback = await get_mission_content_and_feedback(4, mission_id)
         
