@@ -17,29 +17,21 @@ app = FastAPI()
 # CORS 미들웨어 추가
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 모든 오리진 허용, 필요시 특정 도메인으로 제한 가능
+    allow_origins=[
+        "http://localhost:3000", 
+        "http://localhost:5173",
+        "https://buddy-lovat.vercel.app/"
+                   
+        ],  # 모든 오리진 허용, 필요시 특정 도메인으로 제한 가능
     allow_credentials=True,
     allow_methods=["*"],  # 모든 HTTP 메서드 허용
     allow_headers=["*"],  # 모든 헤더 허용
 )
 
-
 # 요청 모델 정의
 class QuestionRequest(BaseModel):
     question: str
 
-# 테스트 데이터
-questions = [
-    "영양가 있는 식단을 계획하는 방법?",
-    "청소할 때 필요한 필수 도구는 무엇인가요?",
-    "효과적인 공부 시간 관리 방법?",
-    "옷을 깨끗하게 관리하는 법?",
-    "쓰레기 분리수거 규칙은?",
-    "건강한 식단의 예시?",
-    "효율적인 장보기 요령은?"
-    "집 가기! "
-]
-weights = [3, 2, 5, 4, 1, 6, 2, 7]
 
 
 @app.post("/api/ask", tags=['AI_ask'], description="사용자와 소통할 수 있는 맞춤형 감성 챗봇입니다. 선택한 캐릭터에 따라 대답하는 아이가 라집니다.")
