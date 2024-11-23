@@ -37,8 +37,7 @@ questions = [
 weights = [3, 2, 5, 4, 1, 6, 2, 7]
 
 
-
-@app.post("/api/ask", tags=['AI_ask'], description="사용자와 소통할 수 있는 맞춤형 감성 챗봇입니다. 선택한 캐릭터에 따라 대답하는 아이가 달라집니다.")
+@app.post("/api/ask", tags=['AI_ask'], description="사용자와 소통할 수 있는 맞춤형 감성 챗봇입니다. 선택한 캐릭터에 따라 대답하는 아이가 라집니다.")
 async def ask_question(request: QuestionRequest, kakao_id: str = Header(...)):
     try:
         # 카카오 ID로 character_type 조회
@@ -48,10 +47,9 @@ async def ask_question(request: QuestionRequest, kakao_id: str = Header(...)):
         if not character_type:
             raise HTTPException(status_code=404, detail="Character type not found for the user.")
         
-       
         print("request입니다" , request)
         print("캐릭터타입니다", character_type)
-        answer = custom_chatbot(request.question, character_type)
+        answer = custom_chatbot(request.question, character_type[0])
         return {"answer": answer}
 
     except Exception as e:

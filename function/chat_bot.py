@@ -51,8 +51,6 @@ def custom_chatbot(question: str, char_type: str) -> str:
             """
 
        
-        
-        
         # GPT-4용 프롬프트 템플릿
         general_prompt = ChatPromptTemplate.from_messages([
             ("system", prompt_message),
@@ -64,10 +62,7 @@ def custom_chatbot(question: str, char_type: str) -> str:
         result = chain.invoke({"question": question})
         initial_response = result.content
         print(initial_response)
-
-        # "NEED_CONTEXT"가 포함되면 추가 문서 없이 바로 반환
-        if "NEED_CONTEXT" in initial_response:
-            return "추가적인 정보가 필요합니다. 더 많은 문서나 컨텍스트가 필요할 것 같습니다."
+    
 
         return initial_response
     except Exception as e:
