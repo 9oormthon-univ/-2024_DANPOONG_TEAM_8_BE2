@@ -11,7 +11,8 @@ from query.get_check_lists_by_id import fetch_check_lists
 from query.get_area_type_by_area_id import get_area_type_by_area_id
 from function.analysis import generate_analysis_response
 from query.post_mission_to_db import insert_mission_to_db
-from Questions import ALL_QUESTIONS
+from .Questions import ALL_QUESTIONS
+
 app = FastAPI()
 
 # CORS 미들웨어 추가

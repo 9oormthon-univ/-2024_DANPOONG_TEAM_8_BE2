@@ -33,7 +33,7 @@ def create_missions(questions, weights) :
         ),
         (
             "human",
-            "똑바로해라, 다음 항목들에 대해 가중치가 낮은 항목들에 집중하여 2개의 미션을 만들어 주세요: {questions}"
+            "똑바로해라, 다음 항목들에 대해 가중치가 낮은 항목들에 집중하여 4개의 미션을 만들어 주세요: {questions}"
         )
     ])
 
