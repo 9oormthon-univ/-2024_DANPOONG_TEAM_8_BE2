@@ -1,7 +1,7 @@
 import aiomysql
 from typing import Optional, Dict
 from dotenv import load_dotenv
-from get_userid_by_kakao import get_userID
+from .get_userid_by_kakao import get_userID
 import os
 
 load_dotenv()

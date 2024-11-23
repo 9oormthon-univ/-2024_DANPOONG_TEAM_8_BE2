@@ -72,5 +72,3 @@ def custom_chatbot(question: str, char_type: str) -> str:
         return initial_response
     except Exception as e:
         return f"오류가 발생했습니다: {str(e)}"
-
-print(custom_chatbot("안녕?", "CHICK")) #test
