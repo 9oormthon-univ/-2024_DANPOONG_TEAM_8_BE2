@@ -83,6 +83,7 @@ async def generate_missions(
           description="사용자가 미션에 대한 버디 피드백을 제공하는 API입니다.")
 async def provide_buddy_feedback(
     kakao_id: str = Header(..., description="카카오 사용자 ID"),
+    
 ):
     try:
         member_id = await get_userID(kakao_id)
