@@ -105,20 +105,21 @@ async def generate_missions(
         ]
         if area_type == 'DAILY_LIFE' :
             QUESTIONS = ALL_QUESTIONS["DAILY_LIFE"]
+            file_path = 'files/Daily_Life.txt'
             
         elif area_type == 'MONEY_MANAGEMENT' :
             QUESTIONS = ALL_QUESTIONS["MONEY_MANAGEMENT"]
-            
+            file_path = 'files/Money_Management.txt'
 
         elif area_type == 'SELF_MANAGEMENT' :
             QUESTIONS = ALL_QUESTIONS["SELF_MANAGEMENT"]
-            
+            file_path = 'files/SELF_MANAGEMENT.txt'
 
         elif area_type == 'SOCIETY' :
             QUESTIONS = ALL_QUESTIONS["SOCIETY"]
-            
+            file_path = 'files/SOCIETY.txt'
 
-        missions = create_missions(QUESTIONS, weights)
+        missions = create_missions(QUESTIONS, weights, file_path)
 
         # "id", "area", "member" 값을 row에서 추출
         all_missions.append({
