@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware  # CORS 미들웨어 import
 from function.buddy_comment import create_feedback
 from query.get_mission_content import get_mission_content_and_feedback
 from query.get_check_lists_by_id import fetch_check_lists
-
+from query.get_area_type_by_area_id import get_area_type_by_area_id
 
 app = FastAPI()
 
@@ -84,7 +84,8 @@ async def generate_missions(
     print("DB_RESULT\n", db_result)
     print("DB_AREA\n", db_result[0]['area'])
     all_missions = create_missions(questions, weights)
-
+    area_type = await get_area_type_by_area_id(db_result[0]['area'])
+    print("Main에서 받는 area_type:\n",area_type)
     print("ALL_MISSIONS: ",all_missions)
     
     return {"result": all_missions}
