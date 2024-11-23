@@ -88,7 +88,42 @@ async def generate_missions(
     print("Main에서 받는 area_type:\n",area_type)
     print("ALL_MISSIONS: ",all_missions)
     
-    return {"result": all_missions}
+    report = generate_analysis_response(db_result, area_type) #여기서 사용자 분석을 합니다잉
+
+
+    print("Report 결과입니다 : \n", report)
+    if not db_result or "error" in db_result:
+        raise HTTPException(status_code=500, detail="데이터베이스 조회 중 오류 발생")
+
+    # 각 행에 대해 미션 생성
+    all_missions = []
+    
+    for row in db_result:
+        db_ques = row["questions"]
+        weights = [
+            db_ques["firstQ"],
+            db_ques["secondQ"],
+            db_ques["thirdQ"],
+            db_ques["fourthQ"],
+            db_ques["fifthQ"],
+            db_ques["sixthQ"],
+            db_ques["seventhQ"],
+            db_ques["eighthQ"],
+        ]
+        missions = create_missions(QUESTIONS, weights)
+
+        # "id", "area", "member" 값을 row에서 추출
+        all_missions.append({
+            "id": row["id"], 
+            "area_id": row["area"], 
+            "member": row["member"],  # row["member_id"] → row["member"]로 수정
+            "missions_list": missions
+        })
+    print("ALL_MISSIONS: ",all_missions)
+    # 미션 데이터를 DB에 삽입
+    await insert_mission_to_db(all_missions[0])
+
+    return {"report": report}
 
 
 @app.post("/api/buddy-feedback", tags=['Buddy_Feedback'], 
