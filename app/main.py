@@ -7,6 +7,9 @@ from function.create_missions import create_missions
 from fastapi.middleware.cors import CORSMiddleware  # CORS 미들웨어 import
 from function.buddy_comment import create_feedback
 from query.get_mission_content import get_mission_content_and_feedback
+from query.get_check_lists_by_id import fetch_check_lists
+
+
 app = FastAPI()
 
 # CORS 미들웨어 추가
@@ -61,6 +64,7 @@ async def ask_question(request: QuestionRequest, kakao_id: str = Header(...)):
         )
 async def generate_missions(
     kakao_id: str = Header(..., description= "카카오 사용자 ID"),
+    check_list_id: int = Query(..., description= "사용자 설문 ID"),
 
 ):
     """
@@ -77,8 +81,10 @@ async def generate_missions(
     print("체크리스트 아이디 :", check_list_id)
 
     db_result = await fetch_check_lists(check_list_id)
-
+    print("DB_RESULT\n", db_result)
+    print("DB_AREA\n", db_result[0]['area'])
     all_missions = create_missions(questions, weights)
+
     print("ALL_MISSIONS: ",all_missions)
     
     return {"result": all_missions}
