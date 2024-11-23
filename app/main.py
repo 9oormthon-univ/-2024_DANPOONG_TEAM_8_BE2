@@ -6,7 +6,7 @@ from query.get_userid_by_kakao import get_userID
 from function.create_missions import create_missions
 from fastapi.middleware.cors import CORSMiddleware  # CORS 미들웨어 import
 from function.buddy_comment import create_feedback
-
+from query.get_mission_content import get_mission_content_and_feedback
 app = FastAPI()
 
 # CORS 미들웨어 추가
@@ -82,19 +82,23 @@ async def generate_missions(
 @app.post("/api/buddy-feedback", tags=['Buddy_Feedback'], 
           description="사용자가 미션에 대한 버디 피드백을 제공하는 API입니다.")
 async def provide_buddy_feedback(
-    kakao_id: str = Header(..., description="카카오 사용자 ID"),
-    
+    kakao_id: str = Header(..., description="카카오 사용자 ID", alias="kakao-id"),  # Header의 경우 하이픈 사용
+    mission_id: int = Query(..., description="피드백을 제공할 미션의 ID"),  # mission_id는 1 이상의 정수
 ):
     try:
+        # 나머지 코드는 동일
         member_id = await get_userID(kakao_id)
+        print(member_id)
+        print(mission_id)
         if not member_id:
             raise HTTPException(status_code=404, detail="Kakao ID not found.")
-
-        level, char_type = await get_character_info(member_id)
-
-        sample_content, sample_feedback = '집가기', '잘 해결했어'
-        feedback_result = create_feedback(sample_content, sample_feedback, char_type)
-        print(feedback_result)
+            
+        level, char_type = await get_character_info(5)
+        print(level, char_type, "레벨과 캐릭터타입 \n")
+        content, feedback = await get_mission_content_and_feedback(4, mission_id)
+        
+        feedback_result = create_feedback(content, feedback, char_type)
+        
         return {
             "status": "success",
             "message": "Feedback submitted successfully.",
@@ -103,6 +107,8 @@ async def provide_buddy_feedback(
             "character_level": level,
         }
 
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
     except Exception as e:
         print(f"Error in provide_buddy_feedback: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
