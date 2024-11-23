@@ -1,20 +1,53 @@
 import os
-from langchain_openai import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
-import json
+from langchain.chains import RetrievalQA
+from langchain.vectorstores import FAISS
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.schema import Document
+from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
+import json
 
 # 환경 변수에서 API 키 가져오기
 load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-def create_missions(questions, weights) :
 
-    general_llm = ChatOpenAI(
-        model="gpt-4o",
-        temperature=0.0,
-        openai_api_key=OPENAI_API_KEY
+def load_documents_from_txt(file_path):
+    """
+    텍스트 파일에서 문서를 로드합니다.
+    각 줄을 하나의 문서로 간주합니다.
+    """
+    documents = []
+    try:
+        with open(file_path, "r", encoding="utf-8") as file:
+            lines = file.readlines()
+            for line in lines:
+                if line.strip():  # 빈 줄은 무시
+                    documents.append(Document(page_content=line.strip()))
+    except Exception as e:
+        raise ValueError(f"텍스트 파일 로드 중 오류 발생: {e}")
+    return documents
+
+
+def create_missions(questions, weights, file_path) :
+
+
+    document = load_documents_from_txt(file_path)
+
+    embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
+    vectorstore = FAISS.from_documents(document, embeddings)
+    retriever = vectorstore.as_retriever()
+
+    qa_chain = RetrievalQA.from_chain_type(
+        llm=ChatOpenAI(
+            model="gpt-4",
+            temperature=0.0,
+            openai_api_key=OPENAI_API_KEY
+        ),
+        retriever=retriever
     )
+
 
     # 질문 목록을 가중치 순으로 정렬
     sorted_questions = [q for _, q in sorted(zip(weights, questions))]
@@ -42,9 +75,9 @@ def create_missions(questions, weights) :
     missions_prompt = prompt.format(questions=questions_str)
 
     # OpenAI API 호출
-    mission_response = general_llm(missions_prompt)
+    mission_response = qa_chain.run(missions_prompt)
 
-    raw_content = mission_response.content
+    raw_content = mission_response.strip()
     if not raw_content.strip():
         raise ValueError("GPT 응답이 비어 있습니다.")
     

@@ -3,7 +3,6 @@ from pydantic import BaseModel
 from query.get_character_type_by_id import get_character_type_by_user, get_character_info
 from function.chat_bot import custom_chatbot
 from query.get_userid_by_kakao import get_userID
-from function.create_missions import create_missions
 from fastapi.middleware.cors import CORSMiddleware  # CORS 미들웨어 import
 from function.buddy_comment import create_feedback
 from query.get_mission_content import get_mission_content_and_feedback
@@ -11,6 +10,7 @@ from query.get_check_lists_by_id import fetch_check_lists
 from query.get_area_type_by_area_id import get_area_type_by_area_id
 from function.analysis import generate_analysis_response
 from query.post_mission_to_db import insert_mission_to_db
+from function.create_missions import create_missions
 from .Questions import ALL_QUESTIONS
 
 app = FastAPI()
