@@ -9,7 +9,9 @@ from function.buddy_comment import create_feedback
 from query.get_mission_content import get_mission_content_and_feedback
 from query.get_check_lists_by_id import fetch_check_lists
 from query.get_area_type_by_area_id import get_area_type_by_area_id
-
+from function.analysis import generate_analysis_response
+from query.post_mission_to_db import insert_mission_to_db
+from Questions import ALL_QUESTIONS
 app = FastAPI()
 
 # CORS 미들웨어 추가
@@ -83,11 +85,9 @@ async def generate_missions(
     db_result = await fetch_check_lists(check_list_id)
     print("DB_RESULT\n", db_result)
     print("DB_AREA\n", db_result[0]['area'])
-    all_missions = create_missions(questions, weights)
+
     area_type = await get_area_type_by_area_id(db_result[0]['area'])
     print("Main에서 받는 area_type:\n",area_type)
-    print("ALL_MISSIONS: ",all_missions)
-    
     report = generate_analysis_response(db_result, area_type) #여기서 사용자 분석을 합니다잉
 
 
@@ -110,6 +110,21 @@ async def generate_missions(
             db_ques["seventhQ"],
             db_ques["eighthQ"],
         ]
+        if area_type == 'DAILY_LIFE' :
+            QUESTIONS = ALL_QUESTIONS["DAILY_LIFE"]
+            
+        elif area_type == 'MONEY_MANAGEMENT' :
+            QUESTIONS = ALL_QUESTIONS["MONEY_MANAGEMENT"]
+            
+
+        elif area_type == 'SELF_MANAGEMENT' :
+            QUESTIONS = ALL_QUESTIONS["SELF_MANAGEMENT"]
+            
+
+        elif area_type == 'SOCIETY' :
+            QUESTIONS = ALL_QUESTIONS["SOCIETY"]
+            
+
         missions = create_missions(QUESTIONS, weights)
 
         # "id", "area", "member" 값을 row에서 추출
@@ -124,6 +139,7 @@ async def generate_missions(
     await insert_mission_to_db(all_missions[0])
 
     return {"report": report}
+
 
 
 @app.post("/api/buddy-feedback", tags=['Buddy_Feedback'], 

@@ -1,5 +1,4 @@
 import aiomysql
-from typing import List, Dict, Optional
 from dotenv import load_dotenv
 import os
 
